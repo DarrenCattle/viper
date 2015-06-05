@@ -5,9 +5,18 @@
 #   viper have some crack - feed viper his essentials
 #   viper sleep it off - help viper maintain balance in life
 #   viper wassup (with that) - you already know
-#	viper quantum {bet} {percentage} - theoretical dice game, max bet 10, odds between 0-1, payout is bet/percentage
+#	viper quantum {bet} {percentage} - theoretical dice game, max bet 1, odds between 0-1, payout is bet/percentage
 
 module.exports = (robot) ->
+
+	robot.respond /PING$/i, (msg) ->
+    	msg.send "PONG"
+
+  	robot.respond /ADAPTER$/i, (msg) ->
+    	msg.send robot.adapterName
+
+  	robot.respond /TIME$/i, (msg) ->
+    	msg.send "Server time is: #{new Date()}"
 
 	robot.respond /ECHO (.*)$/i, (res) ->
     if res.message.user.name.toLowerCase() == "d"
