@@ -5,7 +5,7 @@
 #   viper have some crack - feed viper his essentials
 #   viper sleep it off - help viper maintain balance in life
 #   viper wassup (with that) - you already know
-#	viper quantum {bet} {percentage} - theoretical dice game, max bet 1, odds between 0-1, payout is bet/percentage
+#	molly pay viper {bet} quantum {odds} - theoretical dice game, max bet 1, odds between 0-1, payout is bet/odds
 
 module.exports = (robot) ->
 
