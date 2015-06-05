@@ -34,25 +34,21 @@ module.exports = (robot) ->
 	robot.hear /wassup/i, (res) ->
 		res.reply "ya'll cowards don't even smoke crack"
 
-	robot.hear /molly pay (\S*) (\S*) quantum (\S*)/i, (res) ->
-    	robot.brain.set 'quantumOdds', res.match[3]
+	robot.hear /molly pay viper (\S*) quantum (\S*)/i, (res) ->
+		robot.brain.set 'quantumOdds', res.match[3]
 
-	robot.hear /(\S*): Successfully sent (\S*) to viper/i (res) ->
-	    user = res.match[1]
-	    bet = res.match[2]
-	    seed = Math.random()
-	    odds = robot.brain.get('quantumOdds')
-	    quantum = odds > 0 && odds < 1 && bet > 0 && bet <= 1
-	    if quantum && res.message.user.name.toLowerCase() == "molly"
-	        if odds > seed
-	            res.reply 'Seed: ' + seed                
-	            res.reply 'pay ' + user + bet/odds
-	        else
-	            res.reply 'Seed: ' + seed
-	            res.reply 'viper snorts ' + bet + ' krack kreds'
-	    else
-	        res.reply 'Non-quantum parameters specified'
-
-
-
-
+	robot.hear /(\S*): Successfully sent (\S*) to viper/i, (res) ->
+		user = res.match[1]
+		bet = res.match[2]
+		seed = Math.random()
+		odds = robot.brain.get('quantumOdds')
+		quantum = odds > 0 && odds < 1 && bet > 0 && bet <= 1
+		if quantum && res.message.user.name.toLowerCase() == "molly"
+			if odds > seed
+				res.reply 'Seed: ' + seed                
+				res.reply 'pay ' + user + bet/odds
+			else
+				res.reply 'Seed: ' + seed
+				res.reply 'viper snorts ' + bet + ' krack kreds'
+		else
+			res.reply 'Non-quantum parameters specified'
