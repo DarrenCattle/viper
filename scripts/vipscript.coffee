@@ -51,6 +51,7 @@ module.exports = (robot) ->
 		bet = res.match[2]
 		seed = Math.random()
 		odds = robot.brain.get('quantumOdds')
+		res.reply odds
 		quantum = odds > 0 && odds < 1 && bet > 0 && bet <= 1
 		if quantum && res.message.user.name.toLowerCase() == "molly"
 			if odds > seed
