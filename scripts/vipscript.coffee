@@ -45,19 +45,17 @@ module.exports = (robot) ->
 
 	robot.hear /molly pay viper (\S*) quantum (\S*)/i, (res) ->
 		robot.brain.set 'quantumOdds', res.match[2]
-		res.reply robot.brain.get('quantumOdds')
 
 	robot.hear /(\S*): Successfully sent (\S*) to viper/i, (res) ->
 		user = res.match[1]
 		bet = res.match[2]
 		seed = Math.random()
 		odds = robot.brain.get('quantumOdds')
-		res.reply odds
 		quantum = odds > 0 && odds < 1 && bet > 0 && bet <= 1
 		if quantum && res.message.user.name.toLowerCase() == "molly"
 			if odds > seed
 				res.send 'Seed: ' + seed                
-				res.reply 'pay ' + user + bet/odds
+				res.reply 'pay ' + user + ' ' + bet/odds
 			else
 				res.send 'Seed: ' + seed
 				res.send 'viper snorts ' + bet + ' krack kreds'
