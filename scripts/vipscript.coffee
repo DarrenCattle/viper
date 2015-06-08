@@ -6,6 +6,7 @@
 #   viper sleep it off - help viper maintain balance in life
 #   viper wassup (with that) - you already know
 #	molly pay viper {bet} quantum {odds} - theoretical dice game, max bet 1, odds between 0-1, payout is bet/odds
+#	viper wealth - find viper's balance and minimum required odds
 
 module.exports = (robot) ->
 
@@ -25,7 +26,7 @@ module.exports = (robot) ->
     else
         res.reply "ya'll cowards don't even smoke crack"
 
-	robot.hear /have some crack/i, (res) ->
+	robot.respond /have some crack/i, (res) ->
 		# Get number of crack had (coerced to a number).
 		crackHad = robot.brain.get('totalCrack') * 1 or 0
 
@@ -36,12 +37,18 @@ module.exports = (robot) ->
 			robot.brain.set 'totalCrack', crackHad+1
 			res.send 'I love crack! Crack injected: ' + robot.brain.get('totalCrack')
 
-	robot.hear /sleep it off/i, (res) ->
+	robot.respond /sleep it off/i, (res) ->
 		robot.brain.set 'totalCrack', 0
 		res.send 'zzzzz'
 
-	robot.hear /wassup/i, (res) ->
+	robot.respond /wassup/i, (res) ->
 		res.send "ya'll cowards don't even smoke crack"
+
+	robot.respond /wealth/i, (res) ->
+		res.send "molly balance"
+
+	robot.respond /you have (\S*) kkreds/i, (res) ->
+		res.send "minimum odds to get paid = " + 1/res.match[1]
 
 	robot.hear /molly pay viper (\S*) quantum (\S*)/i, (res) ->
 		robot.brain.set 'quantumOdds', res.match[2]
