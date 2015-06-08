@@ -48,7 +48,7 @@ module.exports = (robot) ->
 		res.send "molly balance"
 
 	robot.respond /you have (\S*) kkreds/i, (res) ->
-		res.send "minimum odds to get paid = " + 1/res.match[1]
+		res.send "minimum odds to get paid = " + 1/(res.match[1]+1)
 
 	robot.hear /molly pay viper (\S*) quantum (\S*)/i, (res) ->
 		robot.brain.set 'quantumOdds', res.match[2]
