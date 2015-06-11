@@ -5,8 +5,9 @@
 #   viper have some crack - feed viper his essentials
 #   viper sleep it off - help viper maintain balance in life
 #   viper wassup (with that) - you already know
-#	molly pay viper {bet} quantum {odds} - theoretical dice game, max bet 1, odds between 0-1, payout is bet/odds
-#	viper wealth - find viper's balance and minimum required odds
+#	molly pay viper {bet} quantum {odds} - theoretical dice game, max bet 2, odds between 0-1, payout is 99%
+#	viper wealth {bet} - find viper's balance and minimum required odds, default is 1
+#	viper gimme - make viper say pay me for molly, thanks
 
 module.exports = (robot) ->
 
@@ -25,6 +26,9 @@ module.exports = (robot) ->
         res.send echo
     else
         res.reply "ya'll cowards don't even smoke crack"
+
+    robot.respond /gimme/i, (res) ->
+    	res.send 'pay me'
 
 	robot.respond /have some crack/i, (res) ->
 		# Get number of crack had (coerced to a number).
@@ -45,11 +49,16 @@ module.exports = (robot) ->
 		res.send "ya'll cowards don't even smoke crack"
 
 	robot.respond /wealth/i, (res) ->
+		robot.brain.set 'potentialBet', 1
 		res.send "molly balance"
 
+	robot.respond /wealth (\S*)/i, (res) ->
+		robot.brain.set 'potentialBet', res.match[1]
+
 	robot.respond /you have (\S*) kkreds/i, (res) ->
-		total = parseFloat(res.match[1], 10)+1
-		res.send "minimum odds to get paid = " + 1/total
+		potBet = parseFloat(robot.brain.get('potentialBet'), 10)
+		total = parseFloat(res.match[1], 10)+potBet
+		res.send "minimum odds to get paid = " + potBet/total
 
 	robot.hear /molly pay viper (\S*) quantum (\S*)/i, (res) ->
 		robot.brain.set 'quantumOdds', res.match[2]
@@ -59,11 +68,11 @@ module.exports = (robot) ->
 		bet = res.match[2]
 		seed = Math.random()
 		odds = robot.brain.get('quantumOdds')
-		quantum = odds > 0 && odds < 1 && bet > 0 && bet <= 1
+		quantum = odds > 0 && odds < 1 && bet > 0 && bet <= 2
 		if quantum && res.message.user.name.toLowerCase() == "molly"
 			if odds > seed
 				res.send 'Seed: ' + seed                
-				res.reply 'pay ' + user + ' ' + bet/odds
+				res.reply 'pay ' + user + ' ' + 0.99*bet/odds
 			else
 				res.send 'Seed: ' + seed
 				res.send 'viper snorts ' + bet + ' krack kreds'
