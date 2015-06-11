@@ -27,9 +27,6 @@ module.exports = (robot) ->
     else
         res.reply "ya'll cowards don't even smoke crack"
 
-    robot.respond /gimme/i, (res) ->
-    	res.send 'pay me'
-
 	robot.respond /have some crack/i, (res) ->
 		# Get number of crack had (coerced to a number).
 		crackHad = robot.brain.get('totalCrack') * 1 or 0
@@ -40,6 +37,9 @@ module.exports = (robot) ->
 		else
 			robot.brain.set 'totalCrack', crackHad+1
 			res.send 'I love crack! Crack injected: ' + robot.brain.get('totalCrack')
+
+	robot.respond /gimme/i, (res) ->
+		res.send 'pay me'
 
 	robot.respond /sleep it off/i, (res) ->
 		robot.brain.set 'totalCrack', 0
