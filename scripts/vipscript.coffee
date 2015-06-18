@@ -9,6 +9,8 @@
 #	viper wealth {bet} - find viper's balance and minimum required odds, default is 1
 #	viper gimme - make viper say pay me for molly, thanks
 
+deck = ['A:spades:', 'K:spades:', 'Q:spades:', 'J:spades:', '10:spades:', '9:spades:', '8:spades:', '7:spades:', '6:spades:', '5:spades:', '4:spades:', '3:spades:', '2:spades:', 'A:hearts:', 'K:hearts:', 'Q:hearts:', 'J:hearts:', '10:hearts:', '9:hearts:', '8:hearts:', '7:hearts:', '6:hearts:', '5:hearts:', '4:hearts:', '3:hearts:', '2:hearts:', 'A:clubs:', 'K:clubs:', 'Q:clubs:', 'J:clubs:', '10:clubs:', '9:clubs:', '8:clubs:', '7:clubs:', '6:clubs:', '5:clubs:', '4:clubs:', '3:clubs:', '2:clubs:', 'A:diamonds:', 'K:diamonds:', 'Q:diamonds:', 'J:diamonds:', '10:diamonds:', '9:diamonds:', '8:diamonds:', '7:diamonds:', '6:diamonds:', '5:diamonds:', '4:diamonds:', '3:diamonds:', '2:diamonds:']
+
 module.exports = (robot) ->
 
 	robot.respond /PING$/i, (msg) ->
@@ -26,6 +28,14 @@ module.exports = (robot) ->
         res.send echo
     else
         res.reply "ya'll cowards don't even smoke crack"
+
+	robot.respond /draw (\S*)/i, (res) ->
+		cards = res.match[1]
+		drawn = []
+		if cards > 0 
+			res.reply deck[Math.floor(Math.random()*deck.length)] for [1..cards]
+		else
+			res.reply 'you on crack of :spades: nigga'
 
 	robot.respond /have some crack/i, (res) ->
 		# Get number of crack had (coerced to a number).
@@ -58,7 +68,7 @@ module.exports = (robot) ->
 	robot.respond /you have (\S*) kkreds/i, (res) ->
 		potBet = parseFloat(robot.brain.get('potentialBet'), 10)
 		total = parseFloat(res.match[1], 10)+potBet
-		res.send "minimum odds to get paid = " + potBet/total
+		res.send "minimum odds to get paid = " + 0.99*potBet/total
 
 	robot.hear /molly pay viper (\S*) quantum (\S*)/i, (res) ->
 		robot.brain.set 'quantumOdds', res.match[2]
