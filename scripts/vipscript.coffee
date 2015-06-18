@@ -33,8 +33,10 @@ module.exports = (robot) ->
 	robot.respond /draw (\S*)/i, (res) ->
 		cards = res.match[1]
 		drawn = []
+		stringer = ''
 		if cards > 0 
-			res.reply deck[Math.floor(Math.random()*deck.length)] for [1..cards]
+			stringer += deck[Math.floor(Math.random()*deck.length)] + ' ' for [1..cards]
+			res.reply stringer
 		else
 			res.reply 'you on crack of :spades: nigga'
 
