@@ -40,11 +40,6 @@ module.exports = (robot) ->
     else
         res.reply "ya'll cowards don't even smoke crack"
 
-    robot.respond /house (\S*)/i, (res) ->
-    if res.message.user.name.toLowerCase() == "d"
-        houseadv = parseFloat(res.match[1], 10)
-        res.send 'house advantage set to: ' + (1-houseadv)
-
 	robot.respond /draw (\S*)/i, (res) ->
 		cards = res.match[1]
 		stringer = ''
@@ -54,6 +49,13 @@ module.exports = (robot) ->
 			res.reply 'crack cards left in deck: ' + playdeck.length
 		else
 			res.reply 'you on crack of :spades: nigga'
+
+	robot.respond /house (\S*)/i, (res) ->
+		if res.message.user.name.toLowerCase() == "d"
+			houseadv = parseFloat(res.match[1], 10)
+			res.send 'house advantage set to: ' + (1-houseadv)
+		else
+			res.send 'no swiping'
 
 	robot.respond /shuffle/i, (res) ->
 		playdeck = deck.slice(0)
