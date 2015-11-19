@@ -138,10 +138,10 @@ module.exports = (robot) ->
 	robot.hear /(\S*): Successfully sent (\S*) to viper/i, (res) ->
 		res.send 'thanks for money'
 
-	robot.hear /blackjack/i, (res) ->
+	robot.respond /blackjack/i, (res) ->
 		res.send 'who wants to play blackjack? type (viper join)'
 
-	robot.hear /join/i, (res) ->
+	robot.respond /join/i, (res) ->
 		if !blackjack_start
 			name = res.message.user.name.toLowerCase()
 			if blackjack_players[name]?
@@ -154,7 +154,7 @@ module.exports = (robot) ->
 										}
 				res.send name + ' has joined'
 
-	robot.hear /deal/i, (res) ->
+	robot.respond /deal/i, (res) ->
 		res.send 'viper shuffle'
 		blackjack_start = true
 		for k,player of blackjack_players
@@ -188,7 +188,7 @@ module.exports = (robot) ->
 
 		res.send 'initial draw phase complete'
 
-	robot.hear /hit me/i, (res) ->
+	robot.respond /hit me/i, (res) ->
 		name = res.message.user.name.toLowerCase()
 		stringer = viperdraw(Math.floor(Math.random()*playdeck.length))
 		res.reply stringer
@@ -200,7 +200,7 @@ module.exports = (robot) ->
 			res.reply 'score value: ' + blackjack_players[name].score
 
 
-	robot.hear /stay/i, (res) ->
+	robot.respond /stay/i, (res) ->
 		name = res.message.user.name.toLowerCase()
 		blackjack_players[name].finished = true
 		res.reply 'final score value: ' + blackjack_players[name].score 
@@ -212,7 +212,7 @@ module.exports = (robot) ->
 			winner = 0
 			winnername = ''
 			for k,player of blackjack_players
-				if player.score > winner
+				if player.score > winner && player.score < 22
 					winner = player.score
 					winnername = player.person
 			res.send 'winner is: ' + winnername + ' with ' + winner
