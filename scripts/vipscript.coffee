@@ -17,7 +17,8 @@ deck = ['A:spades:', 'K:spades:', 'Q:spades:', 'J:spades:', '10:spades:', '9:spa
 
 playdeck = deck.slice(0)
 drawdeck = []
-houseadv = 0.8
+houseadv = 0.9
+stocks = []
 
 viperdraw = (seeder) ->
 	drawdeck.push(playdeck[seeder])
@@ -29,11 +30,16 @@ module.exports = (robot) ->
 	robot.respond /PING$/i, (msg) ->
     	msg.send "PONG"
 
-  	robot.respond /ADAPTER$/i, (msg) ->
-    	msg.send robot.adapterName
+  	robot.respond /stocks$/i, (msg) ->
+    	msg.send stocks
 
-  	robot.respond /TIME$/i, (msg) ->
-    	msg.send "Server time is: #{new Date()}"
+	robot.respond /addstock (\S*)/i, (res) ->
+		stock = res.match[1]
+		if stock in stocks or stock.length > 4
+			res.reply stock + ' already exists in the stock list or is not valid'
+		else
+			stocks.push(res.match[1])
+			res.reply res.match[1] + ' added to stock list'
 
 	robot.respond /ECHO (.*)$/i, (res) ->
     if res.message.user.name.toLowerCase() == "d"
