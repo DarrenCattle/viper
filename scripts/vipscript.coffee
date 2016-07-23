@@ -30,7 +30,7 @@ module.exports = (robot) ->
 	robot.respond /PING$/i, (msg) ->
     	msg.send "PONG"
 
-  	robot.respond /stocks$/i, (msg) ->
+  	robot.respond /stocks/i, (msg) ->
     	msg.send stocks
 
 	robot.respond /addstock (\S*)/i, (res) ->
