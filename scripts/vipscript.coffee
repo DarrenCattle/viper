@@ -42,6 +42,9 @@ module.exports = (robot) ->
 	robot.respond /stocks$/i, (msg) ->
 		msg.send stocks.toString()
 
+	robot.respond /list/i, (res) ->
+		res.send stocks.toString()
+
 	robot.respond /addstock (\S*)/i, (res) ->
 		stock = res.match[1]
 		if stock in stocks or stock.length > 4
