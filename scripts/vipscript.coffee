@@ -18,7 +18,7 @@ deck = ['A:spades:', 'K:spades:', 'Q:spades:', 'J:spades:', '10:spades:', '9:spa
 playdeck = deck.slice(0)
 drawdeck = []
 houseadv = 0.9
-stocks = []
+stocks = ['ACAD']
 
 viperdraw = (seeder) ->
 	drawdeck.push(playdeck[seeder])
@@ -28,10 +28,19 @@ viperdraw = (seeder) ->
 module.exports = (robot) ->
 
 	robot.respond /PING$/i, (msg) ->
-    	msg.send "PONG"
+		msg.send "PONG"
 
-  	robot.respond /stocks/i, (msg) ->
-    	msg.send stocks
+	robot.respond /ECHO (.*)$/i, (res) ->
+		if res.message.user.name.toLowerCase() == "d"
+			echo = res.match[1]
+			res.send echo
+		else
+			res.reply "ya'll cowards don't even smoke crack"
+
+# Stock Functions
+
+	robot.respond /stocks$/i, (msg) ->
+		msg.send stocks.toString()
 
 	robot.respond /addstock (\S*)/i, (res) ->
 		stock = res.match[1]
@@ -41,12 +50,7 @@ module.exports = (robot) ->
 			stocks.push(res.match[1])
 			res.reply res.match[1] + ' added to stock list'
 
-	robot.respond /ECHO (.*)$/i, (res) ->
-    if res.message.user.name.toLowerCase() == "d"
-        echo = res.match[1]
-        res.send echo
-    else
-        res.reply "ya'll cowards don't even smoke crack"
+# Card Functions
 
 	robot.respond /draw (\S*)/i, (res) ->
 		cards = res.match[1]
@@ -58,38 +62,22 @@ module.exports = (robot) ->
 		else
 			res.reply 'you on crack of :spades: nigga'
 
+	robot.respond /shuffle/i, (res) ->
+		playdeck = deck.slice(0)
+		drawdeck = []
+		res.send 'cards be like :spades::diamonds::clubs::hearts:'
+
+# Molly Functions
+
+	robot.respond /gimme/i, (res) ->
+		res.send 'pay me'
+
 	robot.respond /house (\S*)/i, (res) ->
 		if res.message.user.name.toLowerCase() == "d"
 			houseadv = parseFloat(res.match[1], 10)
 			res.send 'house advantage set to: ' + (1-houseadv)
 		else
 			res.send 'no swiping'
-
-	robot.respond /shuffle/i, (res) ->
-		playdeck = deck.slice(0)
-		drawdeck = []
-		res.send 'cards be like :spades::diamonds::clubs::hearts:'
-
-	robot.respond /have some crack/i, (res) ->
-		# Get number of crack had (coerced to a number).
-		crackHad = robot.brain.get('totalCrack') * 1 or 0
-
-		if crackHad > 4
-			res.send "I'm cracked out..."
-
-		else
-			robot.brain.set 'totalCrack', crackHad+1
-			res.send 'I love crack! Crack injected: ' + robot.brain.get('totalCrack')
-
-	robot.respond /gimme/i, (res) ->
-		res.send 'pay me'
-
-	robot.respond /sleep it off/i, (res) ->
-		robot.brain.set 'totalCrack', 0
-		res.send 'zzzzz'
-
-	robot.respond /wassup/i, (res) ->
-		res.send "ya'll cowards don't even smoke crack"
 
 	robot.respond /wealth/i, (res) ->
 		robot.brain.set 'potentialBet', 1
@@ -121,3 +109,23 @@ module.exports = (robot) ->
 				res.send 'viper snorts ' + bet + ' krack kreds'
 		else
 			res.send 'Non-quantum parameters specified'
+
+# Misc Functions
+
+	robot.respond /have some crack/i, (res) ->
+		# Get number of crack had (coerced to a number).
+		crackHad = robot.brain.get('totalCrack') * 1 or 0
+
+		if crackHad > 4
+			res.send "I'm cracked out..."
+
+		else
+			robot.brain.set 'totalCrack', crackHad+1
+			res.send 'I love crack! Crack injected: ' + robot.brain.get('totalCrack')
+
+	robot.respond /sleep it off/i, (res) ->
+		robot.brain.set 'totalCrack', 0
+		res.send 'zzzzz'
+
+	robot.respond /wassup/i, (res) ->
+		res.send "ya'll cowards don't even smoke crack"
