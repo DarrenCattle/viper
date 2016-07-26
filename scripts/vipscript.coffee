@@ -10,8 +10,10 @@
 #	viper gimme - make viper say pay me for molly, thanks
 #	viper draw {cards} - draw # of cards
 #	viper shuffle - shuffle cards
-
-Decimal = require "decimal.js"
+#	viper stocks - current list of stocks
+#	viper addstock - add a legitimate stock ticker to the list
+#	viper load - load the current ticker
+#	viper ticker - display current tickers
 
 deck = ['A:spades:', 'K:spades:', 'Q:spades:', 'J:spades:', '10:spades:', '9:spades:', '8:spades:', '7:spades:', '6:spades:', '5:spades:', '4:spades:', '3:spades:', '2:spades:', 'A:hearts:', 'K:hearts:', 'Q:hearts:', 'J:hearts:', '10:hearts:', '9:hearts:', '8:hearts:', '7:hearts:', '6:hearts:', '5:hearts:', '4:hearts:', '3:hearts:', '2:hearts:', 'A:clubs:', 'K:clubs:', 'Q:clubs:', 'J:clubs:', '10:clubs:', '9:clubs:', '8:clubs:', '7:clubs:', '6:clubs:', '5:clubs:', '4:clubs:', '3:clubs:', '2:clubs:', 'A:diamonds:', 'K:diamonds:', 'Q:diamonds:', 'J:diamonds:', '10:diamonds:', '9:diamonds:', '8:diamonds:', '7:diamonds:', '6:diamonds:', '5:diamonds:', '4:diamonds:', '3:diamonds:', '2:diamonds:']
 
@@ -19,11 +21,18 @@ playdeck = deck.slice(0)
 drawdeck = []
 houseadv = 0.9
 stocks = ['ACAD']
+ticker = []
 
 viperdraw = (seeder) ->
 	drawdeck.push(playdeck[seeder])
 	playdeck.splice(seeder,1)
 	return drawdeck[drawdeck.length-1]
+
+getTicker = (link) ->
+	request.get { uri: link, json: true }, (err, r, body) -> 
+		truncated = body.substring(4,body.length)
+		json = JSON.parse(truncated)
+		ticker = json
 
 module.exports = (robot) ->
 
@@ -39,11 +48,8 @@ module.exports = (robot) ->
 
 # Stock Functions
 
-	robot.respond /stocks$/i, (msg) ->
+	robot.respond /stocks/i, (msg) ->
 		msg.send stocks.toString()
-
-	robot.respond /list/i, (res) ->
-		res.send stocks.toString()
 
 	robot.respond /addstock (\S*)/i, (res) ->
 		stock = res.match[1]
@@ -52,6 +58,13 @@ module.exports = (robot) ->
 		else
 			stocks.push(res.match[1])
 			res.reply res.match[1] + ' added to stock list'
+
+	robot.respond /load/i, (msg) ->
+		url = 'http://finance.google.com/finance/info?client=ig&q='
+		getTicker(url+stocks.toString())
+
+	robot.respond /ticker/i, (msg) ->
+		msg.send stock.t + ' ' + stock.l + ' ' + stock.c for stock in ticker
 
 # Card Functions
 
