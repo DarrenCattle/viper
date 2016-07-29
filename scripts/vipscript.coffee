@@ -12,8 +12,7 @@
 #	viper shuffle - shuffle cards
 #	viper stocks - current list of stocks
 #	viper addstock - add a legitimate stock ticker to the list
-#	viper load - load the current ticker
-#	viper ticker - display current tickers
+#	viper ticker - display current tickers from stock list
 
 request = require('request')
 
