@@ -30,11 +30,12 @@ viperdraw = (seeder) ->
 	playdeck.splice(seeder,1)
 	return drawdeck[drawdeck.length-1]
 
-getTicker = (link) ->
+getTicker = (link, message) ->
 	request.get { uri: link, json: true }, (err, r, body) -> 
 		truncated = body.substring(4,body.length)
 		json = JSON.parse(truncated)
 		ticker = json
+		message.send stock.t + ' ' + stock.l + ' ' + stock.c for stock in ticker
 
 module.exports = (robot) ->
 
@@ -61,12 +62,10 @@ module.exports = (robot) ->
 			stocks.push(res.match[1])
 			res.reply res.match[1] + ' added to stock list'
 
-	robot.respond /load/i, (msg) ->
-		url = 'http://finance.google.com/finance/info?client=ig&q='
-		getTicker(url+stocks.toString())
-
 	robot.respond /ticker/i, (msg) ->
-		msg.send stock.t + ' ' + stock.l + ' ' + stock.c for stock in ticker
+		url = 'http://finance.google.com/finance/info?client=ig&q='
+		msg.send 'loading stock list'
+		getTicker(url+stocks.toString(), msg)
 
 # Card Functions
 
