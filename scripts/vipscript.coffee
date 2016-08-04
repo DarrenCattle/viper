@@ -34,7 +34,7 @@ getTicker = (link, message) ->
 		truncated = body.substring(4,body.length)
 		json = JSON.parse(truncated)
 		ticker = json
-		message.send stock.t + ' ' + stock.l + ' ' + stock.c for stock in ticker
+		message.send stock.t + ' ' + stock.l + ' ' + stock.cp + '% ' + stock.c for stock in ticker
 
 module.exports = (robot) ->
 
