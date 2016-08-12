@@ -33,8 +33,20 @@ getTicker = (link, message) ->
 	request.get { uri: link, json: true }, (err, r, body) -> 
 		truncated = body.substring(4,body.length)
 		json = JSON.parse(truncated)
-		ticker = json
-		message.send stock.t + ' ' + stock.l + ' ' + stock.cp + '% ' + stock.c for stock in ticker
+		dispTicker(json, message)
+
+getFixtures = (link, message) ->
+	request.get { uri: link, json: true }, (err, r, body) -> 
+		dispFixtures(body, message)
+
+dispTicker = (ticker, message) -> 
+	message.send stock.t + ' ' + stock.l + ' ' + stock.cp + '% ' + stock.c for stock in ticker
+
+dispFixtures = (games, message) ->
+	fixtures = games["fixtures"]
+	for item in fixtures
+		message.send item.homeTeamName + ' vs. ' + item.awayTeamName + ' at ' + item.date
+
 
 module.exports = (robot) ->
 
@@ -47,6 +59,13 @@ module.exports = (robot) ->
 			res.send echo
 		else
 			res.reply "ya'll cowards don't even smoke crack"
+
+# Soccer Functions
+
+	robot.respond /games/i, (msg) ->
+		url = 'http://api.football-data.org/v1/fixtures?timeFrame=n1'
+		msg.send 'loading game list'
+		getFixtures(url, msg)
 
 # Stock Functions
 
