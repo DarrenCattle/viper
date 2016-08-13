@@ -65,7 +65,6 @@ module.exports = (robot) ->
 	robot.respond /games/i, (msg) ->
 		url = 'http://api.football-data.org/v1/fixtures?timeFrame=n1'
 		msg.send 'loading game list'
-		getFixtures(url, msg)
 
 # Stock Functions
 
