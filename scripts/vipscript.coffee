@@ -59,7 +59,7 @@ getFixtures = (link, message) ->
 dispFixtures = (games, message) ->
 	fixtures = games["fixtures"]
 	for item in fixtures
-		message.send item.homeTeamName + ' vs. ' + item.awayTeamName + ' at ' + item.date
+		message.send item.homeTeamName + ' vs. ' + item.awayTeamName + ' at ' + new Date(item.date)
 
 # Start Module Listeners
 
