@@ -2,7 +2,7 @@
 #   Viper the bot useful scripts
 #
 # Commands:
-#   viper have some crack - feed viper his essentials
+#   viper have some beer - feed viper his essentials
 #   viper sleep it off - help viper maintain balance in life
 #   viper wassup (with that) - you already know
 #	molly pay viper {bet} quantum {odds} - theoretical dice game, max bet 3, odds between 0-1, payout is 99%
@@ -13,6 +13,9 @@
 #	viper stocks - current list of stocks
 #	viper addstock - add a legitimate stock ticker to the list
 #	viper ticker - display current tickers from stock list
+#	viper italy - display Serie A games for current matchday
+#	viper league {ID} - display soccer games for any league
+#	viper leagues - list supported leagues and their corresponding ID
 
 request = require('request')
 
@@ -23,11 +26,14 @@ drawdeck = []
 houseadv = 0.9
 stocks = ['ACAD']
 ticker = []
+leagues = ['426','430','436','439']
 
 viperdraw = (seeder) ->
 	drawdeck.push(playdeck[seeder])
 	playdeck.splice(seeder,1)
 	return drawdeck[drawdeck.length-1]
+
+# Stock Requests
 
 getTicker = (link, message) ->
 	request.get { uri: link, json: true }, (err, r, body) -> 
@@ -35,18 +41,25 @@ getTicker = (link, message) ->
 		json = JSON.parse(truncated)
 		dispTicker(json, message)
 
-getFixtures = (link, message) ->
-	request.get { uri: link, json: true }, (err, r, body) -> 
-		dispFixtures(body, message)
-
 dispTicker = (ticker, message) -> 
 	message.send stock.t + ' ' + stock.l + ' ' + stock.cp + '% ' + stock.c for stock in ticker
+
+# Soccer Requests
+
+getMatchday = (link, league, message) ->
+	request.get { uri: link, json: true, "X-Auth-Token": "e5137d9c30a84d3d9ad3d0745923aa52" }, (err, r, body) -> 
+		matchday = body.currentMatchday
+		match_url = 'http://api.football-data.org/v1/competitions/'+league+'/fixtures?matchday='+matchday
+		getFixtures(match_url, message)
+
+getFixtures = (link, message) ->
+	request.get { uri: link, json: true, "X-Auth-Token": "e5137d9c30a84d3d9ad3d0745923aa52" }, (err, r, body) -> 
+		dispFixtures(body, message)
 
 dispFixtures = (games, message) ->
 	fixtures = games["fixtures"]
 	for item in fixtures
 		message.send item.homeTeamName + ' vs. ' + item.awayTeamName + ' at ' + item.date
-
 
 module.exports = (robot) ->
 
@@ -58,13 +71,27 @@ module.exports = (robot) ->
 			echo = res.match[1]
 			res.send echo
 		else
-			res.reply "ya'll cowards don't even smoke crack"
+			res.reply 'my owner is d'
 
 # Soccer Functions
 
-	robot.respond /games/i, (msg) ->
-		url = 'http://api.football-data.org/v1/fixtures?timeFrame=n1'
-		msg.send 'loading game list'
+	robot.respond /italy/i, (msg) ->
+		msg.send "I'm italian"
+		url = 'http://api.football-data.org/v1/competitions/438/'
+		getMatchday(url, '438', msg)
+
+	robot.respond /league (\S*)/i, (msg) ->
+		url = 'http://api.football-data.org/v1/competitions/'+msg.match[1]
+		if msg.match[1] in leagues
+			getMatchday(url, msg.match[1], msg)
+		else 
+			msg.send 'not a valid league'
+
+	robot.respond /leagues/i, (msg) ->
+		msg.send 'Premier League: 426'
+		msg.send 'Bundesliga: 430'
+		msg.send 'La Liga: 436'
+		msg.send 'Portugese Liga: 439'
 
 # Stock Functions
 
@@ -92,9 +119,9 @@ module.exports = (robot) ->
 		if cards > 0 
 			stringer += viperdraw(Math.floor(Math.random()*playdeck.length)) + ' ' for [1..cards]
 			res.reply stringer
-			res.reply 'crack cards left in deck: ' + playdeck.length
+			res.reply 'cards left in deck: ' + playdeck.length
 		else
-			res.reply 'you on crack of :spades: nigga'
+			res.reply 'no cards left in deck'
 
 	robot.respond /shuffle/i, (res) ->
 		playdeck = deck.slice(0)
@@ -146,20 +173,19 @@ module.exports = (robot) ->
 
 # Misc Functions
 
-	robot.respond /have some crack/i, (res) ->
-		# Get number of crack had (coerced to a number).
-		crackHad = robot.brain.get('totalCrack') * 1 or 0
+	robot.respond /have some beers/i, (res) ->
+		# Get number of soda had (coerced to a number).
+		beersHad = robot.brain.get('totalBeers') * 1 or 0
 
-		if crackHad > 4
-			res.send "I'm cracked out..."
-
+		if beersHad > 4
+			res.send "I'm drunk..."
 		else
-			robot.brain.set 'totalCrack', crackHad+1
-			res.send 'I love crack! Crack injected: ' + robot.brain.get('totalCrack')
+			robot.brain.set 'totalBeers', beersHad+1
+			res.send 'I love beers! Beer injected: ' + robot.brain.get('totalBeer')
 
 	robot.respond /sleep it off/i, (res) ->
-		robot.brain.set 'totalCrack', 0
+		robot.brain.set 'totalBeers', 0
 		res.send 'zzzzz'
 
 	robot.respond /wassup/i, (res) ->
-		res.send "ya'll cowards don't even smoke crack"
+		res.send 'hello I am viper a sentimental being'
