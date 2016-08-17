@@ -61,6 +61,8 @@ dispFixtures = (games, message) ->
 	for item in fixtures
 		message.send item.homeTeamName + ' vs. ' + item.awayTeamName + ' at ' + item.date
 
+# Start Module Listeners
+
 module.exports = (robot) ->
 
 	robot.respond /PING$/i, (msg) ->
@@ -167,7 +169,7 @@ module.exports = (robot) ->
 				res.reply 'pay ' + user + ' ' + houseadv*bet/odds
 			else
 				res.send 'Seed: ' + seed
-				res.send 'viper snorts ' + bet + ' krack kreds'
+				res.send 'viper steals ' + bet + ' kkreds'
 		else
 			res.send 'Non-quantum parameters specified'
 
