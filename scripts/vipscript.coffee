@@ -2,9 +2,7 @@
 #   Viper the bot useful scripts
 #
 # Commands:
-#   viper have some beer - feed viper his essentials
-#   viper sleep it off - help viper maintain balance in life
-#   viper wassup (with that) - you already know
+#	viper wassup - you already know
 #	molly pay viper {bet} quantum {odds} - theoretical dice game, max bet 3, odds between 0-1, payout is 99%
 #	viper wealth {bet} - find viper's balance and minimum required odds, default is 1
 #	viper gimme - make viper say pay me for molly, thanks
@@ -165,7 +163,7 @@ module.exports = (robot) ->
 		quantum = odds > 0 && odds < 1 && bet > 0 && bet <= 3
 		if quantum && res.message.user.name.toLowerCase() == "molly"
 			if odds > seed
-				res.send 'Seed: ' + seed                
+				res.send 'Seed: ' + seed
 				res.reply 'pay ' + user + ' ' + houseadv*bet/odds
 			else
 				res.send 'Seed: ' + seed
@@ -174,20 +172,6 @@ module.exports = (robot) ->
 			res.send 'Non-quantum parameters specified'
 
 # Misc Functions
-
-	robot.respond /have some beers/i, (res) ->
-		# Get number of soda had (coerced to a number).
-		beersHad = robot.brain.get('totalBeers') * 1 or 0
-
-		if beersHad > 4
-			res.send "I'm drunk..."
-		else
-			robot.brain.set 'totalBeers', beersHad+1
-			res.send 'I love beers! Beer injected: ' + robot.brain.get('totalBeer')
-
-	robot.respond /sleep it off/i, (res) ->
-		robot.brain.set 'totalBeers', 0
-		res.send 'zzzzz'
 
 	robot.respond /wassup/i, (res) ->
 		res.send 'hello I am viper a sentimental being'
