@@ -1,2 +1,2 @@
-export HUBOT_SLACK_TOKEN=axob
+export HUBOT_SLACK_TOKEN=xoxb
 bin/hubot -a slack
