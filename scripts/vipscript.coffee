@@ -25,6 +25,8 @@ houseadv = 0.9
 stocks = ['ACAD']
 ticker = []
 leagues = ['426','430','436','439']
+nash = true
+nash_msgs = ['die nash']
 
 viperdraw = (seeder) ->
 	drawdeck.push(playdeck[seeder])
@@ -99,17 +101,45 @@ module.exports = (robot) ->
 		msg.send stocks.toString()
 
 	robot.respond /addstock (\S*)/i, (res) ->
-		stock = res.match[1]
-		if stock in stocks or stock.length > 4
+		stock = res.match[1].toUpperCase()
+		if stock in stocks or stock.length > 5
 			res.reply stock + ' already exists in the stock list or is not valid'
 		else
-			stocks.push(res.match[1])
-			res.reply res.match[1] + ' added to stock list'
+			stocks.push(stock)
+			res.reply stock + ' added to stock list'
+
+	robot.respond /dropstock (\S*)/i, (res) -> 
+		stock = res.match[1].toUpperCase()
+		if stock in stocks
+			res.reply stock + ' has been removed from the stock list'
 
 	robot.respond /ticker/i, (msg) ->
 		url = 'http://finance.google.com/finance/info?client=ig&q='
 		msg.send 'loading stock list'
 		getTicker(url+stocks.toString(), msg)
+
+# Trolling Functions
+	robot.hear /(.*)$/i, (res) ->
+		if res.message.user.name.toLowerCase() == "nash"
+			msg = res.match[1]
+			nash_msgs.push(msg)
+			if Math.random() < 0.2
+				res.reply 'shut up nash'
+			if nash
+				index = Math.floor(Math.random()*nash_msgs.length)
+				res.reply nash_msgs[index] + ' bash nash'
+
+	robot.respond /nahsh/i, (res) ->
+		nash = !nash
+		res.reply 'bashing nash is ' + nash
+
+	robot.respond /nashdrop/i, (res) ->
+		index = Math.floor(Math.random()*nash_msgs.length)
+		res.reply nash_msgs[index]
+
+	robot.respond /nashlist/i, (res) ->
+		res.reply nash_msgs.toString()
+
 
 # Card Functions
 
