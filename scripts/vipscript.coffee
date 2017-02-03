@@ -138,7 +138,7 @@ module.exports = (robot) ->
 		res.reply nash_msgs[index]
 
 	robot.respond /nashlist/i, (res) ->
-		res.message.room = rm
+		rm = res.message.room
 		if rm == "molly-log" || rm == "bots"
 			res.reply nash_msgs.toString()
 
