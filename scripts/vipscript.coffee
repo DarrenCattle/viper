@@ -123,7 +123,7 @@ module.exports = (robot) ->
 		if res.message.user.name.toLowerCase() == "nash"
 			msg = res.match[1]
 			nash_msgs.push(msg)
-			if Math.random() < 0.01
+			if Math.random() < 0.015
 				res.reply 'shut up nash'
 			if nash
 				index = Math.floor(Math.random()*nash_msgs.length)
@@ -138,8 +138,9 @@ module.exports = (robot) ->
 		res.reply nash_msgs[index]
 
 	robot.respond /nashlist/i, (res) ->
-    if res.message.room == "molly-log"
-		  res.reply nash_msgs.toString()
+		res.message.room = rm
+		if rm == "molly-log" || rm == "bots"
+			res.reply nash_msgs.toString()
 
 
 # Card Functions
