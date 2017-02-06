@@ -65,6 +65,8 @@ dispFixtures = (games, message) ->
 
 module.exports = (robot) ->
 
+	nash_msgs = robot.brain.get("nash-messages") || [];
+
 	robot.respond /PING$/i, (msg) ->
 		msg.send "PONG"
 
@@ -123,6 +125,7 @@ module.exports = (robot) ->
 		if res.message.user.name.toLowerCase() == "nash"
 			msg = res.match[1]
 			nash_msgs.push(msg)
+			robot.brain.set "nash-messages" nash_msgs
 			if Math.random() < 0.015
 				res.reply 'shut up nash'
 			if nash
