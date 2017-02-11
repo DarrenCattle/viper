@@ -103,10 +103,18 @@ module.exports = (robot) ->
 		list = robot.brain.get(name)
 		if list is null
 			list = [value]
-		else
+		else 
 			list.push(value)
-		robot.brain.set(name, value)
-		res.send 'new list: ' + robot.brain.get(name).toString()
+		robot.brain.set(name, list)
+		res.send name + ': ' + robot.brain.get(name).toString()
+
+	robot.respond /show (\S*)/i, (res) ->
+		name = res.match[1]
+		list = robot.brain.get(name)
+		if list is null
+			res.send name + ' is null'
+		else
+			res.send name + ': ' + list.toString()
 
 	robot.respond /clear (\S*)/i, (res) ->
 		robot.brain.set(res.match[1], null)
