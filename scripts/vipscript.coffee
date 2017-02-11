@@ -97,23 +97,20 @@ module.exports = (robot) ->
 
 # Persistence Testing
 
-	robot.respond /listvalue (\S*)/i, (res) ->
-		list = robot.brain.get('list')
-		if list is null
-			list = [res.match[1]]
-		else
-			list.push(res.match[1])
-		robot.brain.set('list', list)
-		res.send 'new list: ' + robot.brain.get('list').toString()
-
 	robot.respond /list (\S*) (\S*)/i, (res) ->
-		list = robot.brain.get('list')
+		name = res.match[1]
+		value = res.match[2]
+		list = robot.brain.get(name)
 		if list is null
-			list = [res.match[1]]
+			list = [value]
 		else
-			list.push(res.match[1])
-		robot.brain.set('list', list)
-		res.send 'new list: ' + robot.brain.get('list').toString()
+			list.push(value)
+		robot.brain.set(name, value)
+		res.send 'new list: ' + robot.brain.get(name).toString()
+
+	robot.respond /clear (\S*)/i, (res) ->
+		robot.brain.set(res.match[1], null)
+		res.send 'cleared ' + res.match[1] + ' list'
 
 # Stock Functions
 
