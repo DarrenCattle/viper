@@ -26,7 +26,6 @@ stocks = ['ACAD']
 ticker = []
 leagues = ['426','430','436','439']
 nash = true
-nash_msgs = ['die nash']
 
 viperdraw = (seeder) ->
 	drawdeck.push(playdeck[seeder])
@@ -60,6 +59,16 @@ dispFixtures = (games, message) ->
 	fixtures = games["fixtures"]
 	for item in fixtures
 		message.send item.homeTeamName + ' vs. ' + item.awayTeamName + ' at ' + new Date(item.date)
+
+# Functional Redis
+
+setList = (key, value, robot) ->
+	list = robot.brain.get(key)
+	if list is null
+		list = [value]
+	else 
+		list.push(value)
+	robot.brain.set(key, list)
 
 # Start Module Listeners
 
@@ -98,27 +107,22 @@ module.exports = (robot) ->
 # Persistence Testing
 
 	robot.respond /list (\S*) (\S*)/i, (res) ->
-		name = res.match[1]
-		value = res.match[2]
-		list = robot.brain.get(name)
-		if list is null
-			list = [value]
-		else 
-			list.push(value)
-		robot.brain.set(name, list)
-		res.send name + ': ' + robot.brain.get(name).toString()
+		setList(res.match[1], res.match[2], robot)
+		res.send res.match[1] + ': ' + robot.brain.get(res.match[1]).toString()
 
 	robot.respond /show (\S*)/i, (res) ->
-		name = res.match[1]
-		list = robot.brain.get(name)
-		if list is null
-			res.send name + ' is null'
-		else
-			res.send name + ': ' + list.toString()
+		if res.message.user.name.toLowerCase() == "d"
+			name = res.match[1]
+			list = robot.brain.get(name)
+			if list is null
+				res.send name + ' is null'
+			else
+				res.send name + ': ' + list.toString()
 
 	robot.respond /clear (\S*)/i, (res) ->
-		robot.brain.set(res.match[1], null)
-		res.send 'cleared ' + res.match[1] + ' list'
+		if res.message.user.name.toLowerCase() == "nash"
+			robot.brain.set(res.match[1], null)
+			res.send 'cleared ' + res.match[1] + ' list'
 
 # Stock Functions
 
@@ -147,25 +151,28 @@ module.exports = (robot) ->
 	robot.hear /(.*)$/i, (res) ->
 		if res.message.user.name.toLowerCase() == "nash"
 			msg = res.match[1]
-			nash_msgs.push(msg)
+			setList('nash-messages', msg, robot)
 			if Math.random() < 0.015
 				res.reply 'shut up nash'
 			if nash
-				index = Math.floor(Math.random()*nash_msgs.length)
-				res.reply nash_msgs[index] + ' bash nash'
+				list = robot.brain.get('nash-messages')
+				index = Math.floor(Math.random()*list.length)
+				res.reply list[index] + ' bash nash'
 
 	robot.respond /nahsh/i, (res) ->
 		nash = !nash
 		res.reply 'bashing nash is ' + nash
 
 	robot.respond /nashdrop/i, (res) ->
-		index = Math.floor(Math.random()*nash_msgs.length)
-		res.reply nash_msgs[index]
+		list = robot.brain.get('nash-messages')
+		index = Math.floor(Math.random()*list.length)
+		res.reply list[index]
 
 	robot.respond /nashlist/i, (res) ->
 		rm = res.message.room
 		if rm == "molly-log" || rm == "bots"
-			res.reply nash_msgs.toString()
+			list = robot.brain.get('nash-messages')
+			res.reply list.toString()
 
 
 # Card Functions
