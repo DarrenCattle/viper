@@ -95,6 +95,26 @@ module.exports = (robot) ->
 		msg.send 'La Liga: 436'
 		msg.send 'Portugese Liga: 439'
 
+# Persistence Testing
+
+	robot.respond /listvalue (\S*)/i, (res) ->
+		list = robot.brain.get('list')
+		if list is null
+			list = [res.match[1]]
+		else
+			list.push(res.match[1])
+		robot.brain.set('list', list)
+		res.send 'new list: ' + robot.brain.get('list').toString()
+
+	robot.respond /list (\S*) (\S*)/i, (res) ->
+		list = robot.brain.get('list')
+		if list is null
+			list = [res.match[1]]
+		else
+			list.push(res.match[1])
+		robot.brain.set('list', list)
+		res.send 'new list: ' + robot.brain.get('list').toString()
+
 # Stock Functions
 
 	robot.respond /stocks/i, (msg) ->
