@@ -120,7 +120,7 @@ module.exports = (robot) ->
 				res.send name + ': ' + list.toString()
 
 	robot.respond /clear (\S*)/i, (res) ->
-		if res.message.user.name.toLowerCase() == "nash"
+		if res.message.user.name.toLowerCase() == "d"
 			robot.brain.set(res.match[1], null)
 			res.send 'cleared ' + res.match[1] + ' list'
 
