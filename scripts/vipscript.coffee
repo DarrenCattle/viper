@@ -14,6 +14,10 @@
 #	viper italy - display Serie A games for current matchday
 #	viper league {ID} - display soccer games for any league
 #	viper leagues - list supported leagues and their corresponding ID
+#	viper nahsh - enable or disable sassy nash responses
+#	viper nashdrop - random phrases from nash
+#	viper show {list} - display from list
+#	viper list {list} {value} - add value to list
 
 request = require('request')
 
@@ -22,10 +26,10 @@ deck = ['A:spades:', 'K:spades:', 'Q:spades:', 'J:spades:', '10:spades:', '9:spa
 playdeck = deck.slice(0)
 drawdeck = []
 houseadv = 0.9
-stocks = ['ACAD']
 ticker = []
 leagues = ['426','430','436','439']
 nash = true
+admin = ["d", "rid", "thomas"]
 
 viperdraw = (seeder) ->
 	drawdeck.push(playdeck[seeder])
@@ -70,6 +74,12 @@ setList = (key, value, robot) ->
 		list.push(value)
 	robot.brain.set(key, list)
 
+removeList = (key, value, robot) ->
+	list = robot.brain.get(key)
+	if value in list
+		result = list.filter (word) -> word isnt value
+		robot.brain.set(key, result)
+
 # Start Module Listeners
 
 module.exports = (robot) ->
@@ -106,18 +116,23 @@ module.exports = (robot) ->
 
 # Persistence Testing
 
-	robot.respond /list (\S*) (\S*)/i, (res) ->
+	robot.respond /add (\S*) (\S*)/i, (res) ->
 		setList(res.match[1], res.match[2], robot)
 		res.send res.match[1] + ': ' + robot.brain.get(res.match[1]).toString()
 
 	robot.respond /show (\S*)/i, (res) ->
-		if res.message.user.name.toLowerCase() == "d"
+		if res.message.user.name.toLowerCase() != "nash"
 			name = res.match[1]
 			list = robot.brain.get(name)
 			if list is null
 				res.send name + ' is null'
 			else
 				res.send name + ': ' + list.toString()
+
+	robot.respond /rm (\S*) (\S*)/i, (res) ->
+		if res.message.user.name.toLowerCase() == "d"
+			removeList(res.match[1], res.match[2], robot)
+		res.send res.match[1] + ': ' + robot.brain.get(res.match[1]).toString()
 
 	robot.respond /clear (\S*)/i, (res) ->
 		if res.message.user.name.toLowerCase() == "d"
@@ -127,25 +142,25 @@ module.exports = (robot) ->
 # Stock Functions
 
 	robot.respond /stocks/i, (msg) ->
-		msg.send stocks.toString()
+		msg.send robot.brain.get("stocks").toString()
 
 	robot.respond /addstock (\S*)/i, (res) ->
 		stock = res.match[1].toUpperCase()
-		if stock in stocks or stock.length > 5
+		if stock in robot.brain.get("stocks") or stock.length > 5
 			res.reply stock + ' already exists in the stock list or is not valid'
 		else
-			stocks.push(stock)
+			setList("stocks", stock, robot)
 			res.reply stock + ' added to stock list'
 
 	robot.respond /dropstock (\S*)/i, (res) -> 
 		stock = res.match[1].toUpperCase()
-		if stock in stocks
+		if stock in robot.brain.get("stocks")
 			res.reply stock + ' has been removed from the stock list'
 
 	robot.respond /ticker/i, (msg) ->
 		url = 'http://finance.google.com/finance/info?client=ig&q='
 		msg.send 'loading stock list'
-		getTicker(url+stocks.toString(), msg)
+		getTicker(url+robot.brain.get("stocks").toString(), msg)
 
 # Trolling Functions
 	robot.hear /(.*)$/i, (res) ->
