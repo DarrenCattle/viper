@@ -10,6 +10,7 @@
 #	viper shuffle - shuffle cards
 #	viper stocks - current list of stocks
 #	viper addstock - add a legitimate stock ticker to the list
+#	viper tick {AMD} - check a single stock 
 #	viper ticker - display current tickers from stock list
 #	viper italy - display Serie A games for current matchday
 #	viper league {ID} - display soccer games for any league
@@ -41,8 +42,11 @@ viperdraw = (seeder) ->
 getTicker = (link, message) ->
 	request.get { uri: link, json: true }, (err, r, body) -> 
 		truncated = body.substring(4,body.length)
-		json = JSON.parse(truncated)
-		dispTicker(json, message)
+		if r.statusCode == 200
+			json = JSON.parse(truncated)
+			dispTicker(json, message)
+		if r.statusCode == 400
+			message.send 'google finance does not recognize this stock'
 
 dispTicker = (ticker, message) -> 
 	message.send stock.t + ' ' + stock.l + ' ' + stock.cp + '% ' + stock.c for stock in ticker
@@ -140,6 +144,10 @@ module.exports = (robot) ->
 			res.send 'cleared ' + res.match[1] + ' list'
 
 # Stock Functions
+
+	robot.respond /tick (\S*)/i, (msg) ->
+		url = 'http://finance.google.com/finance/info?client=ig&q='
+		getTicker(url+msg.match[0].toString(), msg)
 
 	robot.respond /stocks/i, (msg) ->
 		msg.send robot.brain.get("stocks").toString()
