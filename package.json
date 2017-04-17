@@ -2,7 +2,7 @@
   "name": "viper",
   "version": "0.1.0",
   "private": true,
-  "author": "darrencattle <cattle.darren@gmail.com>",
+  "author": "darrencattle <dc@darrencattle.com>",
   "description": "quantum mechanics",
   "dependencies": {
     "hubot": "^2.12.0",

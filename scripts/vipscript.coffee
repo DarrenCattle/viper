@@ -40,6 +40,7 @@ viperdraw = (seeder) ->
 # REST Requests
 
 getRest = (link, message) ->
+	console.log('/get ' + link)
 	request.get { uri: link }, (err, r, body) -> 
 		message.send(body)
 
@@ -115,8 +116,6 @@ module.exports = (robot) ->
 		else
 			res.reply 'my owner is d'
 
-# Soccer Functions
-
 	robot.respond /get (\S*)/i, (msg) ->
 		url = 'https://listophrenic.herokuapp.com/' + msg.match[1]
 		getRest(url, msg)
@@ -125,6 +124,8 @@ module.exports = (robot) ->
 		#if msg.message.user.name.toLowerCase() == "d"
 			url = 'https://listophrenic.herokuapp.com/post/' + msg.match[1] + '/' + msg.match[2]
 			getRest(url, msg)
+
+# Soccer Functions
 
 	robot.respond /italy/i, (msg) ->
 		msg.send "I'm italian"
@@ -192,6 +193,7 @@ module.exports = (robot) ->
 		#url = 'http://finance.google.com/finance/info?client=ig&q='
 		#msg.send 'loading stock list'
 		#getTicker(url+robot.brain.get("stocks").toString(), msg)
+		msg.send 'loading tickers'
 		getStocks('https://listophrenic.herokuapp.com/stocks', msg)
 
 
