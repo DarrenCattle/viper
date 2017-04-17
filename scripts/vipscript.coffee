@@ -37,6 +37,23 @@ viperdraw = (seeder) ->
 	playdeck.splice(seeder,1)
 	return drawdeck[drawdeck.length-1]
 
+# REST Requests
+
+getRest = (link, message) ->
+	request.get { uri: link }, (err, r, body) -> 
+		message.send(body)
+
+getStocks = (link, message) -> 
+	request.get { uri: link }, (err, r, body) -> 
+		stocks = 'http://finance.google.com/finance/info?client=ig&q=' + body.substring(1,body.length-1).replace(/\s/g,'')
+		request.get { uri: stocks, json: true }, (err, r, body) -> 
+			truncated = body.substring(4,body.length)
+			if r.statusCode == 200
+				json = JSON.parse(truncated)
+				dispTicker(json, message)
+			if r.statusCode == 400
+				message.send 'google finance does not recognize this stock'
+
 # Stock Requests
 
 getTicker = (link, message) ->
@@ -100,6 +117,15 @@ module.exports = (robot) ->
 
 # Soccer Functions
 
+	robot.respond /get (\S*)/i, (msg) ->
+		url = 'https://listophrenic.herokuapp.com/' + msg.match[1]
+		getRest(url, msg)
+
+	robot.respond /post (\S*) (\S*)/i, (msg) ->
+		#if msg.message.user.name.toLowerCase() == "d"
+			url = 'https://listophrenic.herokuapp.com/post/' + msg.match[1] + '/' + msg.match[2]
+			getRest(url, msg)
+
 	robot.respond /italy/i, (msg) ->
 		msg.send "I'm italian"
 		url = 'http://api.football-data.org/v1/competitions/438/'
@@ -150,15 +176,12 @@ module.exports = (robot) ->
 		getTicker(url+msg.match[0].toString(), msg)
 
 	robot.respond /stocks/i, (msg) ->
-		msg.send robot.brain.get("stocks").toString()
+		url = 'https://listophrenic.herokuapp.com/stocks'
+		getRest(url, msg)
 
-	robot.respond /addstock (\S*)/i, (res) ->
-		stock = res.match[1].toUpperCase()
-		if stock in robot.brain.get("stocks") or stock.length > 5
-			res.reply stock + ' already exists in the stock list or is not valid'
-		else
-			setList("stocks", stock, robot)
-			res.reply stock + ' added to stock list'
+	robot.respond /addstock (\S*)/i, (msg) ->
+		url = 'https://listophrenic.herokuapp.com/post/stocks/' + msg.match[1]
+		getRest(url, msg)
 
 	robot.respond /dropstock (\S*)/i, (res) -> 
 		stock = res.match[1].toUpperCase()
@@ -166,9 +189,11 @@ module.exports = (robot) ->
 			res.reply stock + ' has been removed from the stock list'
 
 	robot.respond /ticker/i, (msg) ->
-		url = 'http://finance.google.com/finance/info?client=ig&q='
-		msg.send 'loading stock list'
-		getTicker(url+robot.brain.get("stocks").toString(), msg)
+		#url = 'http://finance.google.com/finance/info?client=ig&q='
+		#msg.send 'loading stock list'
+		#getTicker(url+robot.brain.get("stocks").toString(), msg)
+		getStocks('https://listophrenic.herokuapp.com/stocks', msg)
+
 
 # Trolling Functions
 	robot.hear /(.*)$/i, (res) ->
