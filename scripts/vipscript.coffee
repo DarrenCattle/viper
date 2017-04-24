@@ -43,7 +43,8 @@ viperdraw = (seeder) ->
 getRest = (link, message) ->
 	console.log('/get ' + link)
 	request.get { uri: link }, (err, r, body) -> 
-		message.send(body)
+		if r.statusCode == 200
+			message.send(body)
 
 getStocks = (link, message) -> 
 	request.get { uri: link }, (err, r, body) -> 
