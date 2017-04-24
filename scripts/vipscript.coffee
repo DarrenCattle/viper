@@ -199,13 +199,13 @@ module.exports = (robot) ->
 
 
 # Trolling Functions
-	robot.hear /(.*)$/i, (res) ->
-		if res.message.user.name.toLowerCase() == "nash"
-			msg = res.match[1]
-			url = 'https://listophrenic.herokuapp.com/post/nash-messages/' + msg.match[1]
+	robot.hear /(.*)$/i, (msg) ->
+		if msg.message.user.name.toLowerCase() == "nash"
+			value = msg.match[1]
+			url = 'https://listophrenic.herokuapp.com/post/nash-messages/' + value
 			getRest(url, msg)
 			if Math.random() < 0.015
-				res.reply 'shut up nash'
+				msg.reply 'shut up nash'
 
 	robot.respond /nahsh/i, (res) ->
 		nash = !nash
