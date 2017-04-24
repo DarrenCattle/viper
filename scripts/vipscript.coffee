@@ -17,8 +17,9 @@
 #	viper leagues - list supported leagues and their corresponding ID
 #	viper nahsh - enable or disable sassy nash responses
 #	viper nashdrop - random phrases from nash
-#	viper show {list} - display from list
-#	viper list {list} {value} - add value to list
+#	::: LISTOPHRENIC ENABLED :::
+#	viper get {list} - display from list
+#	viper post {list} {value} - add value to list
 
 request = require('request')
 
@@ -29,7 +30,7 @@ drawdeck = []
 houseadv = 0.9
 ticker = []
 leagues = ['426','430','436','439']
-nash = true
+nash = false
 admin = ["d", "rid", "thomas"]
 
 viperdraw = (seeder) ->
@@ -201,46 +202,27 @@ module.exports = (robot) ->
 	robot.hear /(.*)$/i, (res) ->
 		if res.message.user.name.toLowerCase() == "nash"
 			msg = res.match[1]
-			setList('nash-messages', msg, robot)
+			url = 'https://listophrenic.herokuapp.com/post/nash-messages/' + msg.match[1]
+			getRest(url, msg)
 			if Math.random() < 0.015
 				res.reply 'shut up nash'
-			if nash
-				list = robot.brain.get('nash-messages')
-				index = Math.floor(Math.random()*list.length)
-				res.reply list[index] + ' bash nash'
 
 	robot.respond /nahsh/i, (res) ->
 		nash = !nash
 		res.reply 'bashing nash is ' + nash
 
 	robot.respond /nashdrop/i, (res) ->
-		list = robot.brain.get('nash-messages')
-		index = Math.floor(Math.random()*list.length)
-		res.reply list[index]
+		link = 'https://listophrenic.herokuapp.com/nash-messages'
+		request.get { uri: link }, (err, r, body) -> 
+			list = body.substring(1,body.length-1).split(",")
+			index = Math.floor(Math.random()*list.length)
+			res.reply list[index]
 
 	robot.respond /nashlist/i, (res) ->
 		rm = res.message.room
 		if rm == "molly-log" || rm == "bots"
 			list = robot.brain.get('nash-messages')
 			res.reply list.toString()
-
-
-# Card Functions
-
-	robot.respond /draw (\S*)/i, (res) ->
-		cards = res.match[1]
-		stringer = ''
-		if cards > 0 
-			stringer += viperdraw(Math.floor(Math.random()*playdeck.length)) + ' ' for [1..cards]
-			res.reply stringer
-			res.reply 'cards left in deck: ' + playdeck.length
-		else
-			res.reply 'no cards left in deck'
-
-	robot.respond /shuffle/i, (res) ->
-		playdeck = deck.slice(0)
-		drawdeck = []
-		res.send 'cards be like :spades::diamonds::clubs::hearts:'
 
 # Molly Functions
 
@@ -284,8 +266,3 @@ module.exports = (robot) ->
 				res.send 'viper steals ' + bet + ' kkreds'
 		else
 			res.send 'Non-quantum parameters specified'
-
-# Misc Functions
-
-	robot.respond /wassup/i, (res) ->
-		res.send 'hello I am viper a sentimental being'
