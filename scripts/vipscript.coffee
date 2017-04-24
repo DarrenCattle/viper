@@ -204,9 +204,9 @@ module.exports = (robot) ->
 		if msg.message.user.name.toLowerCase() == "nash"
 			value = msg.match[1]
 			url = 'https://listophrenic.herokuapp.com/post/nash-messages/' + value
-			getRest(url, msg)
-			if Math.random() < 0.015
-				msg.reply 'shut up nash'
+			request.get { uri: link }, (err, r, body) -> 
+				if Math.random() < 0.015
+					msg.reply 'shut up nash'
 
 	robot.respond /nahsh/i, (res) ->
 		nash = !nash
