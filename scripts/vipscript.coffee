@@ -31,6 +31,7 @@ houseadv = 0.9
 ticker = []
 leagues = ['426','430','436','439']
 nash = false
+nashs = []
 admin = ["d", "rid", "thomas"]
 
 viperdraw = (seeder) ->
@@ -203,7 +204,8 @@ module.exports = (robot) ->
 	robot.hear /(.*)$/i, (msg) ->
 		if msg.message.user.name.toLowerCase() == "nash"
 			value = msg.match[1]
-			url = 'https://listophrenic.herokuapp.com/post/nash-messages/' + value
+			console.log('its nash and value ' + value)
+			link = 'https://listophrenic.herokuapp.com/post/nash-messages/' + value
 			request.get { uri: link }, (err, r, body) -> 
 				if Math.random() < 0.015
 					msg.reply 'shut up nash'
