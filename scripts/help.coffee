@@ -11,7 +11,7 @@
 #	darrencattle
 
 output = '''
-molly pay viper {bet} quantum {odds} - theoretical dice game, max bet 3, odds between 0-1, payout is 99%
+m0lly pay viper {bet} quantum {odds} - theoretical dice game, max bet 3, odds between 0-1, payout is 99%
 viper draw {cards} - draw # of cards
 viper gimme - make viper say pay me for molly, thanks
 viper shuffle - shuffle cards
