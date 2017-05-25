@@ -1,25 +1,14 @@
 # Description:
-#   Viper the bot useful scripts
+#	viper a useful bot for slack
 #
-# Commands:
-#	viper wassup - you already know
-#	molly pay viper {bet} quantum {odds} - theoretical dice game, max bet 3, odds between 0-1, payout is 99%
-#	viper wealth {bet} - find viper's balance and minimum required odds, default is 1
-#	viper gimme - make viper say pay me for molly, thanks
-#	viper draw {cards} - draw # of cards
-#	viper shuffle - shuffle cards
-#	viper stocks - current list of stocks
-#	viper addstock - add a legitimate stock ticker to the list
-#	viper tick {AMD} - check a single stock 
-#	viper ticker - display current tickers from stock list
-#	viper italy - display Serie A games for current matchday
-#	viper league {ID} - display soccer games for any league
-#	viper leagues - list supported leagues and their corresponding ID
-#	viper nahsh - enable or disable sassy nash responses
-#	viper nashdrop - random phrases from nash
-#	::: LISTOPHRENIC ENABLED :::
-#	viper get {list} - display from list
-#	viper post {list} {value} - add value to list
+# Dependencies:
+#	hubot-slack, request
+#
+# Configuration:
+#	npm
+#
+# Author:
+#	darrencattle
 
 request = require('request')
 
