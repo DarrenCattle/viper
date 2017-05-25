@@ -30,5 +30,5 @@ module.exports = (robot) ->
 
 #	Help Calls
 
-	robot.hear /help/i, (msg) ->
+	robot.respond /help/i, (msg) ->
 		msg.send output

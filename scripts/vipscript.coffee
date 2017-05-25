@@ -1,11 +1,11 @@
 # Description:
-#	viper a useful bot for slack
+#   viper a useful bot for slack
 #
 # Dependencies:
-#	hubot-slack, request
+#   hubot-slack, request
 #
 # Configuration:
-#	npm
+#   npm
 #
 # Author:
 #	darrencattle
