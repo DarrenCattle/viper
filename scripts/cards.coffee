@@ -31,7 +31,9 @@ module.exports = (robot) ->
 	robot.respond /draw (\S*)/i, (res) ->
 		cards = res.match[1]
 		stringer = ''
-		if cards > 0 
+    if cards < 52
+      res.reply '@tom pls nooo'
+		else if cards > 0
 			stringer += draw(Math.floor(Math.random()*playdeck.length)) + ' ' for [1..cards]
 			res.reply stringer
 			res.reply 'cards left in deck: ' + playdeck.length
